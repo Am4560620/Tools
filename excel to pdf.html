@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Convert Excel to PDF with custom compression levels. Free desktop tool." />
+  <meta name="keywords" content="Excel to PDF, PDF compressor, online converter" />
+  <meta name="author" content="YourSiteName" />
+  <title>Excel to PDF - PC Tool</title>
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f3f4f7;
+      color: #333;
+    }
+
+    header {
+      background: #1e88e5;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .main-tool {
+      flex: 3;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="file"], select, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1669bb;
+    }
+
+    .ads {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .adsense-box {
+      background: #eaeaea;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #777;
+      background-color: #f1f1f1;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Excel to PDF Converter</h1>
+    <p>Convert and compress Excel files into PDF format – fast and free!</p>
+  </header>
+
+  <div class="container">
+    <div class="main-tool">
+      <div class="form-group">
+        <label for="excelFile">Upload Excel File</label>
+        <input type="file" id="excelFile" accept=".xlsx" />
+      </div>
+
+      <div class="form-group">
+        <label for="compression">Compression Level</label>
+        <select id="compression">
+          <option value="low">Low (High Quality)</option>
+          <option value="medium">Medium</option>
+          <option value="high">High (Smallest File)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button onclick="convertExcelToPDF()">Convert to PDF</button>
+      </div>
+
+      <div id="status"></div>
+    </div>
+
+    <div class="ads">
+      <div class="adsense-box">
+        <!-- Replace with your Google AdSense ad code -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-xxxxxxxxxxxx"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="false"></ins>
+      </div>
+
+      <div class="adsense-box">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-xxxxxxxxxxxx"
+             data-ad-slot="9876543210"
+             data-ad-format="auto"
+             data-full-width-responsive="false"></ins>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 YourSiteName. All rights reserved.
+  </footer>
+
+  <!-- Google AdSense Loader -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+  <!-- Conversion Script -->
+  <script>
+    async function convertExcelToPDF() {
+      const fileInput = document.getElementById('excelFile');
+      const compression = document.getElementById('compression').value;
+      const status = document.getElementById('status');
+      status.innerHTML = '';
+
+      if (!fileInput.files.length) {
+        alert("Please upload an Excel file first.");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const fontSize = compression === 'high' ? 8 : compression === 'medium' ? 10 : 12;
+
+        json.forEach((row, rowIndex) => {
+          let rowText = row.join(' | ');
+          doc.setFontSize(fontSize);
+          doc.text(rowText, 10, 10 + rowIndex * (fontSize + 2));
+        });
+
+        doc.save("converted.pdf");
+        status.innerHTML = "<p style='color:green;'>PDF downloaded successfully!</p>";
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+
+</body>
+</html>

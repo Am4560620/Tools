@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free online image resizer with compression. Resize and optimize JPG or PNG images easily with this SEO-optimized tool." />
+  <meta name="keywords" content="image resizer, image compression, jpg, png, online tool, responsive image editor" />
+  <meta name="author" content="YourWebsiteName" />
+  <title>Image Resizer & Compressor</title>
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --background: #f8fafc;
+      --text: #1e293b;
+      --card: #ffffff;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      margin: 0;
+      padding-bottom: 2rem;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="file"],
+    input[type="number"],
+    select,
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1.2rem;
+      border-radius: var(--radius);
+      border: 1px solid #cbd5e1;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+
+    .preview {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .preview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      border: 1px solid #e2e8f0;
+      margin-top: 1rem;
+    }
+
+    .ads {
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Image Resizer</h1>
+    <p>Resize and compress your images easily and for free.</p>
+  </header>
+
+  <main>
+    <!-- Ad Unit -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="card">
+      <label for="imageInput">Select Image</label>
+      <input type="file" id="imageInput" accept="image/png, image/jpeg" />
+
+      <label for="width">Width (px)</label>
+      <input type="number" id="width" placeholder="e.g., 800" />
+
+      <label for="height">Height (px)</label>
+      <input type="number" id="height" placeholder="e.g., 600" />
+
+      <label for="quality">Compression Quality</label>
+      <select id="quality">
+        <option value="1">High Quality</option>
+        <option value="0.7">Medium Quality</option>
+        <option value="0.5">Low Quality</option>
+      </select>
+
+      <button onclick="resizeAndDownload()">Resize & Download</button>
+
+      <div class="preview" id="preview"></div>
+    </div>
+
+    <!-- Ad Unit -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 YourWebsiteName. All rights reserved.
+  </footer>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const previewDiv = document.getElementById('preview');
+
+    function resizeAndDownload() {
+      const file = imageInput.files[0];
+      const width = parseInt(document.getElementById('width').value);
+      const height = parseInt(document.getElementById('height').value);
+      const quality = parseFloat(document.getElementById('quality').value);
+
+      if (!file || isNaN(width) || isNaN(height)) {
+        alert('Please provide an image and valid dimensions.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const ext = file.name.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+          const dataURL = canvas.toDataURL(ext, quality);
+
+          const previewImg = document.createElement('img');
+          previewImg.src = dataURL;
+          previewDiv.innerHTML = '';
+          previewDiv.appendChild(previewImg);
+
+          const a = document.createElement('a');
+          a.href = dataURL;
+          a.download = `resized-${file.name}`;
+          a.click();
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+
+</body>
+</html>

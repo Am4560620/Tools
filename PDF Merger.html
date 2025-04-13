@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Merge multiple PDF files into one with a stylish, responsive tool." />
+  <meta name="keywords" content="merge pdf, combine pdfs, pdf merger tool, responsive ui" />
+  <meta name="author" content="YourSiteName" />
+  <title>Stylish PDF Merger</title>
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+  <!-- Modern Style -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    :root {
+      --bg: #f0f4f8;
+      --primary: #6366f1;
+      --accent: #8b5cf6;
+      --text: #1f2937;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #e0e7ff, #fdf2f8);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+    }
+
+    main {
+      flex: 1;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin: 1rem 0 0.5rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      border: 1px solid #d1d5db;
+      margin-bottom: 1.2rem;
+    }
+
+    input {
+      background: white;
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: var(--accent);
+    }
+
+    .ads {
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+      padding: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Merge Multiple PDFs</h1>
+    <p>Select and combine all your PDFs into one. Free & easy!</p>
+  </header>
+
+  <main>
+    <!-- Ad Unit -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="card">
+      <label for="pdfs">Select PDF Files (multiple)</label>
+      <input type="file" id="pdfs" accept="application/pdf" multiple>
+
+      <button onclick="mergePDFs()">Merge & Download</button>
+    </div>
+
+    <!-- Ad Unit -->
+    <div class="ads">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+           data-ad-slot="0987654321"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 YourSiteName. All rights reserved.
+  </footer>
+
+  <!-- PDF-lib Library -->
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <!-- JavaScript to merge PDFs -->
+  <script>
+    async function mergePDFs() {
+      const input = document.getElementById('pdfs');
+      const files = input.files;
+
+      if (files.length < 2) {
+        alert('Please select at least two PDF files to merge.');
+        return;
+      }
+
+      const mergedPdf = await PDFLib.PDFDocument.create();
+
+      for (let file of files) {
+        const arrayBuffer = await file.arrayBuffer();
+        const loadedPdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        const copiedPages = await mergedPdf.copyPages(loadedPdf, loadedPdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      const pdfBytes = await mergedPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'merged.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to JPG Converter - Free Online Tool</title>
+    <meta name="description" content="Convert PDF pages to JPG online for free! Choose compression level to optimize image quality and file size. Easy to use.">
+    <meta name="keywords" content="pdf to jpg, pdf to image, convert pdf online, free pdf converter, image compression">
+    <link rel="canonical" href="YOUR_WEBSITE_URL"> <!- Replace with your website address -->
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #337ab7;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        #output-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .converted-image {
+            max-width: 100%;
+            height: auto;
+            margin: 10px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        #download-all-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: none; /* Hidden initially */
+        }
+
+        #download-all-button:hover {
+            background-color: #0056b3;
+        }
+
+        .ad-space {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF to JPG Converter</h1>
+        <div class="input-group">
+            <label for="pdfFile">Select PDF File:</label>
+            <input type="file" id="pdfFile" accept=".pdf">
+        </div>
+        <div class="input-group">
+            <label for="compressionLevel">Select Compression Level:</label>
+            <select id="compressionLevel">
+                <option value="0.9">High Quality (Larger File)</option>
+                <option value="0.7">Medium Quality</option>
+                <option value="0.5">Low Quality (Smaller File)</option>
+            </select>
+        </div>
+        <button onclick="convertToJPG()">Convert to JPG</button>
+        <div id="output-container">
+            <h2>Converted Images</h2>
+            <div id="image-output"></div>
+            <button id="download-all-button" onclick="downloadAllImages()">Download All (ZIP)</button>
+        </div>
+    </div>
+
+    <div class="ad-space">
+        <p>Advertisement Placeholder 1</p>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-YOUR_AD_CLIENT_ID" <!- Replace with your AdSense Client ID -->
+             data-ad-slot="YOUR_AD_SLOT_ID" <!- Replace with your AdSense Slot ID -->
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <div class="container">
+        <h2>How to Use</h2>
+        <p>1. Click "Select PDF File" and choose your PDF.</p>
+        <p>2. Pick a "Compression Level". Higher quality means bigger files.</p>
+        <p>3. Click "Convert to JPG".</p>
+        <p>4. Your images will appear below. Click "Download All (ZIP)" to save them.</p>
+    </div>
+
+    <div class="ad-space">
+        <p>Advertisement Placeholder 2</p>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-YOUR_AD_CLIENT_ID" <!- Replace with your AdSense Client ID -->
+             data-ad-slot="YOUR_AD_SLOT_ID" <!- Replace with your AdSense Slot ID -->
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js`;
+
+        let allImageURLs = [];
+
+        async function convertToJPG() {
+            const file = document.getElementById('pdfFile').files[0];
+            const compressionLevel = parseFloat(document.getElementById('compressionLevel').value);
+            const outputContainer = document.getElementById('image-output');
+            const downloadAllButton = document.getElementById('download-all-button');
+
+            outputContainer.innerHTML = 'Processing PDF...';
+            allImageURLs = [];
+            downloadAllButton.style.display = 'none';
+
+            if (!file) {
+                outputContainer.innerHTML = '<p>Please select a PDF file.</p>';
+                return;
+            }
+
+            try {
+                const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+                outputContainer.innerHTML = '';
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const canvasContext = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    await page.render({ canvasContext, viewport }).promise;
+
+                    const imageURL = canvas.toDataURL('image/jpeg', compressionLevel);
+                    allImageURLs.push({ url: imageURL, filename: `page_${pageNum}.jpg` });
+
+                    const img = document.createElement('img');
+                    img.src = imageURL;
+                    img.classList.add('converted-image');
+                    outputContainer.appendChild(img);
+                }
+
+                if (allImageURLs.length > 0) {
+                    downloadAllButton.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error converting PDF:', error);
+                outputContainer.innerHTML = '<p>Error processing PDF. Please try again.</p>';
+            }
+        }
+
+        async function downloadAllImages() {
+            if (allImageURLs.length === 0) {
+                alert('No images to download.');
+                return;
+            }
+
+            const zip = new JSZip();
+            for (const imageInfo of allImageURLs) {
+                const base64Data = imageInfo.url.split(',')[1];
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                zip.file(imageInfo.filename, byteArray, { binary: true });
+            }
+
+            zip.generateAsync({ type: 'blob' })
+                .then(function(content) {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(content);
+                    link.download = 'converted_images.zip';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+        }
+    </script>
+</body>
+</html>
